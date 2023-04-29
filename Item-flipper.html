@@ -226,6 +226,14 @@
             var TaxArr = []
             var profitTaxArr = []
             var formatItemArr = []
+            let AvrResults = []
+            let CommaBuyArr = []
+            let CommaSellArr = []
+            let CommaProfitArr = []
+            let CommaMedianArr = []
+            let CommaTaxArr = []
+            let CommaProfitTaxArr = []
+
 
 
 
@@ -247,7 +255,9 @@
                 for (var z = 0; z < result.length; z++) {
                     var pricearray = result[z].map(x => x.price);
                     var priceIQR = IQR(pricearray);
+                    var priceAvr = median(pricearray)
                     IQRResults.push(priceIQR);
+                    AvrResults.push(priceAvr)
 
                     //Gets the item tag id from the element in the result array
                     var itemId = result[z][0].item_tag_id;
@@ -260,6 +270,7 @@
 
                 console.log("IQRResults", IQRResults);
                 console.log("formatItemArr:", formatItemArr);
+                console.log("AvrResults:", AvrResults)
 
 
 
@@ -284,8 +295,9 @@
                     var itemId2 = itemIDARRAY[index];
                     var SellVolume = CounterResult[index]
                     var FormatNameID = formatItemArr[index]
+                    var MedianResults = AvrResults[index]
 
-                    return { itemId2, FormatNameID, buy: buy, sell: sell, profit: profit, SellVolume };
+                    return { MedianResults, itemId2, FormatNameID, buy: buy, sell: sell, profit: profit, SellVolume };
                 });
 
                 var GreatLowIQR = IqrResultsObj.sort(function (a, b) {
@@ -299,6 +311,9 @@
 
                 // select the container where you want to display the boxes
                 var container = document.getElementById("BoxForArray");
+
+
+                //Create Commas in between every third digit.
 
 
 
@@ -321,14 +336,27 @@
                     var ProfitTax = GreatLowIQR[B].profit - TaxArr[B]
                     profitTaxArr.push(ProfitTax)
 
+                    var CommaBuy = Number(GreatLowIQR[B].buy).toLocaleString("en-US");
+                    CommaBuyArr.push(CommaBuy)
+                    var CommaSell = Number(GreatLowIQR[B].sell).toLocaleString("en-US");
+                    CommaSellArr.push(CommaSell)
+                    var CommaProfit
+                    var CommaMedian = Number(GreatLowIQR[B].MedianResults).toLocaleString("en-US");
+                    CommaMedianArr.push(CommaMedian)
+                    var CommaTax = Number(TaxArr[B]).toLocaleString("en-US");
+                    CommaTaxArr.push(CommaTax)
+                    var CommaProfitTax = Number(profitTaxArr[B]).toLocaleString("en-US");
+                    CommaProfitTaxArr.push(CommaProfitTax)
+
 
                     // create a text element to display the values of the current item
                     var text = document.createElement("p");
                     text.innerHTML = GreatLowIQR[B].FormatNameID + "<br>" +
-                        "Buy: " + GreatLowIQR[B].buy + "<br>" +
-                        "Sell: " + GreatLowIQR[B].sell + "(Fee:" + TaxArr[B] + ")" + "<br>" +
-                        "Profit: " + profitTaxArr[B] + "<br>" +
-                        "Volume:" + GreatLowIQR[B].SellVolume + "<br>";
+                        "Buy: " + CommaBuyArr[B] + "<br>" +
+                        "Sell: " + CommaSellArr[B] + "(Fee:" + CommaTaxArr[B] + ")" + "<br>" +
+                        "Profit: " + CommaProfitTaxArr[B] + "<br>" +
+                        "Average:" + CommaMedianArr[B] + "<br>" +
+                    "Volume:" + GreatLowIQR[B].SellVolume + "<br>";
                     text.style.display = "inline-block";
 
 
@@ -362,7 +390,7 @@
 
                     // add the grid item element to the container
                     container.appendChild(gridItem);
-
+                    console.log(CommaBuy)
 
 
                 }
