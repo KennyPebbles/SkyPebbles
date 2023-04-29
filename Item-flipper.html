@@ -116,7 +116,6 @@
             grid-gap: -10px;
             grid-row-gap: 20px;
             /* Add space between rows */
-            border: 1px solid grey;
             font-size: 30px;
             text-align: right;
         }
@@ -130,7 +129,6 @@
         .text-wrapper {
             display: inline-block;
             grid-column: span 1;
-            border: 1px solid black;
             padding: 5px;
             margin: 0;
         }
@@ -165,6 +163,26 @@
         .box p {
             margin-left: -70px;
         }
+
+
+        #FilterList {
+            background-image: url('/css/searchicon.png');
+            /* Add a search icon to input */
+            background-position: 20px 12px;
+            /* Position the search icon */
+            background-repeat: no-repeat;
+            /* Do not repeat the icon image */
+            width: 80%;
+            /* Full-width */
+            font-size: 16px;
+            /* Increase font-size */
+            padding: 12px 20px 12px 40px;
+            /* Add some padding */
+            border: 1px solid #ddd;
+            /* Add a grey border */
+            margin-bottom: 12px;
+            /* Add some space below the input */
+        }
     </style>
 
 </head>
@@ -188,10 +206,13 @@
 
     <div id="main">
 
+        <input type="text" id="FilterList" onkeyup="ListFilter()" placeholder="Search for items..">
 
         <div id="BoxForArray" class="center3">
 
         </div>
+
+
         <script>
             var mini = true;
 
@@ -324,6 +345,8 @@
                     // create a box element
                     var box = document.createElement("div");
                     box.classList.add("box");
+                    box.id = GreatLowIQR[B].itemId2;
+
 
                     //1% tax
                     var tax
@@ -356,7 +379,7 @@
                         "Sell: " + CommaSellArr[B] + "(Fee:" + CommaTaxArr[B] + ")" + "<br>" +
                         "Profit: " + CommaProfitTaxArr[B] + "<br>" +
                         "Average:" + CommaMedianArr[B] + "<br>" +
-                    "Volume:" + GreatLowIQR[B].SellVolume + "<br>";
+                        "Volume:" + GreatLowIQR[B].SellVolume + "<br>";
                     text.style.display = "inline-block";
 
 
@@ -390,7 +413,7 @@
 
                     // add the grid item element to the container
                     container.appendChild(gridItem);
-                    console.log(CommaBuy)
+
 
 
                 }
@@ -499,6 +522,28 @@
 
                 return median;
             }
+
+
+//Need Help with This
+            // function ListFilter() {
+            //     var input, filter, ul, li, a, J, txtValue;
+            //     input = document.getElementById('FilterList');
+            //     filter = input.value.toUpperCase();
+            //     ul = document.getElementById("myUL");
+            //     li = ul.querySelectorAll('div.item');
+
+
+            //     for (J = 0; J < li.length; J++) {
+            //         a = li[J].getElementsByTagName("a")[0];
+            //         txtValue = a.textContent || a.innerText;
+            //         if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            //             li[J].style.display = "";
+            //         } else {
+            //             li[J].style.display = "none";
+            //         }
+            //     }
+            //     console.log("ul" ,ul)
+            // }
 
 
 
