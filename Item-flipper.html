@@ -207,10 +207,15 @@
     <div id="main">
 
         <input type="text" id="FilterList" onkeyup="ListFilter()" placeholder="Search for items..">
+        <ul id="myUL"></ul>
 
         <div id="BoxForArray" class="center3">
 
         </div>
+
+
+
+        </ul>
 
 
         <script>
@@ -254,8 +259,12 @@
             let CommaMedianArr = []
             let CommaTaxArr = []
             let CommaProfitTaxArr = []
-
-
+            var box
+            var GreatLowIQR
+            var FormatNameID
+            var FormatNameIDLength
+            var FMIDLArr = []
+            var li, TextLi, ul, li2, aa, txtvalue, a
 
 
 
@@ -315,13 +324,13 @@
                     }
                     var itemId2 = itemIDARRAY[index];
                     var SellVolume = CounterResult[index]
-                    var FormatNameID = formatItemArr[index]
+                    FormatNameID = formatItemArr[index]
                     var MedianResults = AvrResults[index]
 
                     return { MedianResults, itemId2, FormatNameID, buy: buy, sell: sell, profit: profit, SellVolume };
                 });
 
-                var GreatLowIQR = IqrResultsObj.sort(function (a, b) {
+                GreatLowIQR = IqrResultsObj.sort(function (a, b) {
                     if (isNaN(a.profit) && isNaN(b.profit)) return 0; // if both are NaN, treat them as equal
                     if (isNaN(a.profit)) return -1; // a is NaN, so put it at the end
                     if (isNaN(b.profit)) return 1; // b is NaN, so put it at the end
@@ -343,7 +352,7 @@
                 // loop through each item in GreatLowIQR and create a box element for each
                 for (var B = 0; B < GreatLowIQR.length; B++) {
                     // create a box element
-                    var box = document.createElement("div");
+                    box = document.createElement("div");
                     box.classList.add("box");
                     box.id = GreatLowIQR[B].itemId2;
 
@@ -371,6 +380,10 @@
                     var CommaProfitTax = Number(profitTaxArr[B]).toLocaleString("en-US");
                     CommaProfitTaxArr.push(CommaProfitTax)
 
+
+
+                    var FormatNameIDLength = GreatLowIQR[B].FormatNameID
+                    FMIDLArr.push(FormatNameIDLength)
 
                     // create a text element to display the values of the current item
                     var text = document.createElement("p");
@@ -418,10 +431,25 @@
 
                 }
 
+                ul = document.getElementById("myUL");
+                console.log("ul:", ul);
+
+                for (let index1 = 0; index1 < FMIDLArr.length; index1++) {
+
+                    li = document.createElement("li");
+                    a = document.createElement("a")
+                    a.innerHTML = FMIDLArr[index1];
+                    console.log("a:", a)
+
+                    li.appendChild(a)
+                    ul.appendChild(li);
+
+
+                }
             }
 
 
-
+            console.log("Test:", FMIDLArr)
             console.log("IQR", IQRResults);
             console.log("TaxArr", TaxArr)
 
@@ -524,28 +552,33 @@
             }
 
 
-//Need Help with This
-            // function ListFilter() {
-            //     var input, filter, ul, li, a, J, txtValue;
-            //     input = document.getElementById('FilterList');
-            //     filter = input.value.toUpperCase();
-            //     ul = document.getElementById("myUL");
-            //     li = ul.querySelectorAll('div.item');
 
 
-            //     for (J = 0; J < li.length; J++) {
-            //         a = li[J].getElementsByTagName("a")[0];
-            //         txtValue = a.textContent || a.innerText;
-            //         if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            //             li[J].style.display = "";
-            //         } else {
-            //             li[J].style.display = "none";
-            //         }
-            //     }
-            //     console.log("ul" ,ul)
-            // }
+            //Need Help with This
+            function ListFilter() {
+                var input = document.getElementById('FilterList');
+                var InputValue = input.value;
+                console.log("Input Value:", InputValue);
+                UpperInputValue = input.value.toUpperCase();
+                console.log("UpperInputValue:", UpperInputValue,)
+                ul = document.getElementById("myUL");
+                li2 = ul.getElementsByTagName('li');
+                console.log("li2:", li2)
 
 
+
+                for (i = 0; i < li2.length; i++) {
+                    aa = li2[i].getElementsByTagName("a")[0];
+                    console.log("a", a)
+                    txtValue = aa.textContent || aa.innerText;
+                    if (txtValue.toUpperCase().indexOf(UpperInputValue) > -1) {
+                        li2[i].style.display = "";
+                    } else {
+                        li2[i].style.display = "none";
+                    }
+
+                }
+            }
 
         </script>
 
