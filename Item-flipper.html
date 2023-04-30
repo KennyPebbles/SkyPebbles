@@ -144,14 +144,14 @@
         .box {
             border: 0.5px solid black;
             margin: 10px;
-            width: 600px;
+            width: 650px;
             margin-left: 400px;
             background-color: gray;
         }
 
         .image-div {
             display: inline-block;
-            width: 50px;
+            width: 15px;
             margin-right: 150px;
         }
 
@@ -431,28 +431,18 @@
 
                 }
 
-                ul = document.getElementById("myUL");
-                console.log("ul:", ul);
-
-                for (let index1 = 0; index1 < FMIDLArr.length; index1++) {
-
-                    li = document.createElement("li");
-                    a = document.createElement("a")
-                    a.innerHTML = FMIDLArr[index1];
-                    console.log("a:", a)
-
-                    li.appendChild(a)
-                    ul.appendChild(li);
 
 
-                }
+
+
+               
             }
 
 
             console.log("Test:", FMIDLArr)
             console.log("IQR", IQRResults);
             console.log("TaxArr", TaxArr)
-
+            
 
             init();
 
@@ -556,29 +546,38 @@
 
             //Need Help with This
             function ListFilter() {
+
+
+
+
+
+
+
+
+
+                //Old Crap
                 var input = document.getElementById('FilterList');
                 var InputValue = input.value;
                 console.log("Input Value:", InputValue);
                 UpperInputValue = input.value.toUpperCase();
                 console.log("UpperInputValue:", UpperInputValue,)
-                ul = document.getElementById("myUL");
-                li2 = ul.getElementsByTagName('li');
-                console.log("li2:", li2)
 
+                
+                 ul = document.getElementById("BoxForArray");
+                 li = ul.getElementsByClassName('grid-item')
+                 console.log ("li:",li)
+                
 
+                for (i = 0; i < GreatLowIQR.length; i++) { 
 
-                for (i = 0; i < li2.length; i++) {
-                    aa = li2[i].getElementsByTagName("a")[0];
-                    console.log("a", a)
-                    txtValue = aa.textContent || aa.innerText;
-                    if (txtValue.toUpperCase().indexOf(UpperInputValue) > -1) {
-                        li2[i].style.display = "";
-                    } else {
-                        li2[i].style.display = "none";
+                    if(GreatLowIQR[i].FormatNameID.toUpperCase().indexOf(UpperInputValue) >-1){
+                        li[i].style.display = "";
                     }
-
-                }
-            }
+                    else {
+                        li[i].style.display = "none";
+                    }
+             
+            }}
 
         </script>
 
