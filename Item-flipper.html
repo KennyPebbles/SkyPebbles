@@ -207,6 +207,7 @@
     <div id="main">
 
         <input type="text" id="FilterList" onkeyup="ListFilter()" placeholder="Search for items..">
+        <input type="text" id="TimeFilter" onkeyup="HourFilter()" placeholder="Enter # of Hours..">
         <ul id="myUL"></ul>
 
         <div id="BoxForArray" class="center3">
@@ -220,6 +221,7 @@
 
         <script>
             var mini = true;
+
 
             function toggleSidebar() {
                 if (mini) {
@@ -265,20 +267,45 @@
             var FormatNameIDLength
             var FMIDLArr = []
             var li, TextLi, ul, li2, aa, txtvalue, a
+            var json2
+            var TimeFilterJson2 = []
+            var IntMIV
+
+            function HourFilter() {
+                var MinuteInput = document.getElementById("TimeFilter")
+                var StrMIV = MinuteInput.value
+                console.log("MinuteInputValue:", StrMIV)
+                IntMIV = parseInt(StrMIV)
+                console.log("IntMIV:", IntMIV)
+                var CTimeStamp = Date.now();
+                var CurrentHour = CTimeStamp / 3600000 // Divides ms into hours
+                var CurrentInputHDiff = CurrentHour - IntMIV
+                console.log("CurrentInputHDiff:", CurrentInputHDiff)
+                TimeFilterJson2 = json2.filter(obj => obj.timestamp / 3600000 > CurrentInputHDiff)
+                console.log("TimeFilterJson2", TimeFilterJson2)
+                Tini()
+            }
+
+
+
 
 
 
             async function init() {
-                const json = await FetchApi();
-                console.log("json:", json)
-
+                json2 = await FetchApi()
+                var json3 = json2
 
 
                 //Displays Sorted Group Array and Volume
-                result = group(json, 'item_tag_id')
-                console.log("Sorted-Data:", result);
+                // if (IntMIV === "") { result = group(json2, 'item_tag_id') }
+                // else {
+                //     result = group(TimeFilterJson2, 'item_tag_id')
+                // }
+                result = group(json2, 'item_tag_id')
+
+                // console.log("Sorted-Data:", result);
                 CounterResult = Volume(result)
-                console.log("Volume:", CounterResult)
+                // console.log("Volume:", CounterResult)
 
 
                 //Loop over every array in Result and calculates IQR for every Array.
@@ -298,9 +325,9 @@
                     itemIDARRAY.push(itemId);
                 }
 
-                console.log("IQRResults", IQRResults);
-                console.log("formatItemArr:", formatItemArr);
-                console.log("AvrResults:", AvrResults)
+                // console.log("IQRResults", IQRResults);
+                // console.log("formatItemArr:", formatItemArr);
+                // console.log("AvrResults:", AvrResults)
 
 
 
@@ -336,7 +363,7 @@
                     if (isNaN(b.profit)) return 1; // b is NaN, so put it at the end
                     return b.profit - a.profit; // both are numbers, so sort normally
                 });
-                console.log("Sorted Profit Data", GreatLowIQR);
+                // console.log("Sorted Profit Data", GreatLowIQR);
 
 
                 // select the container where you want to display the boxes
@@ -432,19 +459,20 @@
                 }
 
 
+                
 
 
 
-               
             }
 
 
-            console.log("Test:", FMIDLArr)
-            console.log("IQR", IQRResults);
-            console.log("TaxArr", TaxArr)
-            
+            // console.log("Test:", FMIDLArr)
+            // console.log("IQR", IQRResults);
+            // console.log("TaxArr", TaxArr)
 
-            init();
+
+            init()
+
 
 
             //SORT
@@ -558,26 +586,29 @@
                 //Old Crap
                 var input = document.getElementById('FilterList');
                 var InputValue = input.value;
-                console.log("Input Value:", InputValue);
+                // console.log("Input Value:", InputValue);
                 UpperInputValue = input.value.toUpperCase();
-                console.log("UpperInputValue:", UpperInputValue,)
+                // console.log("UpperInputValue:", UpperInputValue,)
 
-                
-                 ul = document.getElementById("BoxForArray");
-                 li = ul.getElementsByClassName('grid-item')
-                 console.log ("li:",li)
-                
 
-                for (i = 0; i < GreatLowIQR.length; i++) { 
+                ul = document.getElementById("BoxForArray");
+                li = ul.getElementsByClassName('grid-item')
+                //  console.log ("li:",li)
 
-                    if(GreatLowIQR[i].FormatNameID.toUpperCase().indexOf(UpperInputValue) >-1){
+
+                for (i = 0; i < GreatLowIQR.length; i++) {
+
+                    if (GreatLowIQR[i].FormatNameID.toUpperCase().indexOf(UpperInputValue) > -1) {
                         li[i].style.display = "";
                     }
                     else {
                         li[i].style.display = "none";
                     }
-             
-            }}
+
+                }
+            }
+
+
 
         </script>
 
