@@ -213,9 +213,6 @@
         <div id="BoxForArray" class="center3">
 
         </div>
-
-
-
         </ul>
 
 
@@ -248,13 +245,13 @@
             }
             let result
             let CounterResult
-            let IQRResults = []
+            //let IQRResults = []
             let sortedProfit = []
             let itemIDARRAY = []
             var TaxArr = []
             var profitTaxArr = []
             var formatItemArr = []
-            let AvrResults = []
+            //let AvrResults = []
             let CommaBuyArr = []
             let CommaSellArr = []
             let CommaProfitArr = []
@@ -262,7 +259,7 @@
             let CommaTaxArr = []
             let CommaProfitTaxArr = []
             var box
-            var GreatLowIQR
+            //var GreatLowIQR
             var FormatNameID
             var FormatNameIDLength
             var FMIDLArr = []
@@ -283,7 +280,10 @@
                 console.log("CurrentInputHDiff:", CurrentInputHDiff)
                 TimeFilterJson2 = json2.filter(obj => obj.timestamp / 3600000 > CurrentInputHDiff)
                 console.log("TimeFilterJson2", TimeFilterJson2)
-                Tini()
+
+                GreatLowIQR = calcGreatLowIQR(TimeFilterJson2)
+                displayItems(GreatLowIQR)
+                ListFilter()
             }
 
 
@@ -295,19 +295,25 @@
                 json2 = await FetchApi()
                 var json3 = json2
 
+                GreatLowIQR = calcGreatLowIQR(json2)
+                displayItems(GreatLowIQR)
+            }
 
+
+            function calcGreatLowIQR(endedAuctionsArray) {
                 //Displays Sorted Group Array and Volume
                 // if (IntMIV === "") { result = group(json2, 'item_tag_id') }
                 // else {
                 //     result = group(TimeFilterJson2, 'item_tag_id')
                 // }
-                result = group(json2, 'item_tag_id')
+                result = group(endedAuctionsArray, 'item_tag_id')
 
                 // console.log("Sorted-Data:", result);
                 CounterResult = Volume(result)
                 // console.log("Volume:", CounterResult)
 
-
+                let IQRResults = []
+                let AvrResults = []
                 //Loop over every array in Result and calculates IQR for every Array.
                 for (var z = 0; z < result.length; z++) {
                     var pricearray = result[z].map(x => x.price);
@@ -328,10 +334,6 @@
                 // console.log("IQRResults", IQRResults);
                 // console.log("formatItemArr:", formatItemArr);
                 // console.log("AvrResults:", AvrResults)
-
-
-
-
 
                 //Loops through every array in IQRResuls and sorts the array from highest to lowest profit
 
@@ -365,15 +367,20 @@
                 });
                 // console.log("Sorted Profit Data", GreatLowIQR);
 
+                return GreatLowIQR
 
+            }
+
+
+            function displayItems(GreatLowIQR) {
                 // select the container where you want to display the boxes
                 var container = document.getElementById("BoxForArray");
 
 
+                // delete what is in the container before adding stuff
+                container.innerHTML = "";
+
                 //Create Commas in between every third digit.
-
-
-
 
 
                 // loop through each item in GreatLowIQR and create a box element for each
@@ -459,12 +466,7 @@
                 }
 
 
-                
-
-
-
             }
-
 
             // console.log("Test:", FMIDLArr)
             // console.log("IQR", IQRResults);
@@ -575,14 +577,6 @@
             //Need Help with This
             function ListFilter() {
 
-
-
-
-
-
-
-
-
                 //Old Crap
                 var input = document.getElementById('FilterList');
                 var InputValue = input.value;
@@ -593,12 +587,10 @@
 
                 ul = document.getElementById("BoxForArray");
                 li = ul.getElementsByClassName('grid-item')
-                //  console.log ("li:",li)
-
-
-                for (i = 0; i < GreatLowIQR.length; i++) {
-
-                    if (GreatLowIQR[i].FormatNameID.toUpperCase().indexOf(UpperInputValue) > -1) {
+                //console.log("li:", li)
+                for (i = 0; i < li.length; i++) {
+                    // console.log ("li[i].childNodes:", li[i].childNodes)
+                    if (li[i].childNodes[0].id.indexOf(UpperInputValue) > -1) {
                         li[i].style.display = "";
                     }
                     else {
