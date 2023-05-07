@@ -236,7 +236,7 @@
             //FETCH
             // //fetches from Api
             async function FetchApi() {
-                url = `https://frabjous-melomakarona-884468.netlify.app/.netlify/functions/mypixel`
+                url = `https://frabjous-melomakarona-884468.netlify.app/.netlify/functions/mypixel/v2/loki`
                 const response = await fetch(url);
                 const json = await response.json();
                 return json
@@ -293,7 +293,7 @@
 
             async function init() {
                 json2 = await FetchApi()
-                var json3 = json2
+               console.log("json2:", json2)
 
                 GreatLowIQR = calcGreatLowIQR(json2)
                 displayItems(GreatLowIQR)
