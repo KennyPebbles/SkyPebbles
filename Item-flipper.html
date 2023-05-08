@@ -293,7 +293,7 @@
 
             async function init() {
                 json2 = await FetchApi()
-               console.log("json2:", json2)
+                console.log("json2:", json2)
 
                 GreatLowIQR = calcGreatLowIQR(json2)
                 displayItems(GreatLowIQR)
@@ -411,7 +411,7 @@
                     CommaMedianArr.push(CommaMedian)
                     var CommaTax = Number(TaxArr[B]).toLocaleString("en-US");
                     CommaTaxArr.push(CommaTax)
-                    var CommaProfitTax = Number(profitTaxArr[B]).toLocaleString("en-US");
+                    var CommaProfitTax = Number(GreatLowIQR[B].profit).toLocaleString("en-US");
                     CommaProfitTaxArr.push(CommaProfitTax)
 
 
@@ -541,8 +541,14 @@
                 //console.log("Sell:", Q3)
                 // IQR calculation
                 var IQR = (Q3 - Q1)
+                if (Q3 > 1000000) { Tax2 = Q3 * 0.02; }
+                else {
+                    Tax2 = Q3 * 0.01
+                }
+                var ProfitAfterTax = IQR - Tax2
 
-                let IQRALL = "Buy: " + Q1 + ", Sell: " + Q3 + ", Profit: " + IQR;
+
+                let IQRALL = "Buy: " + Q1 + ", Sell: " + Q3 + ", Profit: " + ProfitAfterTax;
                 return (IQRALL);
 
 
@@ -580,8 +586,10 @@
                 //Old Crap
                 var input = document.getElementById('FilterList');
                 var InputValue = input.value;
+                var UnderscoreInputValue = InputValue.replace(/ /g, "_");
+                console.log("UnderscoreInputValue", UnderscoreInputValue)
                 // console.log("Input Value:", InputValue);
-                UpperInputValue = input.value.toUpperCase();
+                UpperInputValue = UnderscoreInputValue.toUpperCase();
                 // console.log("UpperInputValue:", UpperInputValue,)
 
 
