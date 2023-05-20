@@ -217,6 +217,8 @@
 
 
         <script>
+
+
             var mini = true;
 
 
@@ -236,7 +238,7 @@
             //FETCH
             // //fetches from Api
             async function FetchApi() {
-                url = `https://frabjous-melomakarona-884468.netlify.app/.netlify/functions/mypixel/v2/loki`
+                url = 'https://frabjous-melomakarona-884468.netlify.app/.netlify/functions/mypixel/v2/ended_auctions?limit=4000'
                 const response = await fetch(url);
                 const json = await response.json();
                 return json
@@ -293,7 +295,7 @@
 
             async function init() {
                 json2 = await FetchApi()
-                console.log("json2:", json2)
+                // console.log("json2:", json2)
 
                 GreatLowIQR = calcGreatLowIQR(json2)
                 displayItems(GreatLowIQR)
@@ -301,6 +303,17 @@
 
 
             function calcGreatLowIQR(endedAuctionsArray) {
+                var PetArr = []
+                var PetValid
+                var Remove2
+                var PetArrAll = []
+                var PetArrPriceArr = []
+                var PetNamePriceArr = []
+                var PetNamePriceArr2 = []
+                var PetNamePrice, PetNamePrice2
+                var ItemIdPetArr = []
+                var ItemIdPetArr2 = []
+                var ItemIdPet, ItemIdPet2
                 //Displays Sorted Group Array and Volume
                 // if (IntMIV === "") { result = group(json2, 'item_tag_id') }
                 // else {
@@ -308,305 +321,432 @@
                 // }
                 result = group(endedAuctionsArray, 'item_tag_id')
 
-                // console.log("Sorted-Data:", result);
+                console.log("Sorted-Data:", result);
                 CounterResult = Volume(result)
-                // console.log("Volume:", CounterResult)
 
-                let IQRResults = []
-                let AvrResults = []
-                //Loop over every array in Result and calculates IQR for every Array.
-                for (var z = 0; z < result.length; z++) {
-                    var pricearray = result[z].map(x => x.price);
-                    var priceIQR = IQR(pricearray);
-                    var priceAvr = median(pricearray)
-                    IQRResults.push(priceIQR);
-                    AvrResults.push(priceAvr)
 
-                    //Gets the item tag id from the element in the result array
-                    var itemId = result[z][0].item_tag_id;
-                    var formattedItemId = itemId.split("_")
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                        .join(" ");
-                    formatItemArr.push(formattedItemId);
-                    itemIDARRAY.push(itemId);
+
+
+
+                //Checks For Pets In Array And Then Make It Go Into Another Array
+                for (var loop1 = 0; loop1 < result.length; loop1++) {
+
+
+                    if (result[loop1][0].item_tag_id === 'PET') {
+                        for (var loop2 = 0; loop2 < result[loop1].length; loop2++) {
+                            PetValid = result[loop1][loop2]
+                            //console.log("ResultTest:", result[loop1].item_tag_id)
+                            Remove2 = PetValid.item_tag_display_name.substring(12)
+
+
+
+                            PetArr.push(Remove2)
+                            PetArrAll.push(PetValid)
+                            var PetArrPrice = PetValid.price
+
+                            PetArrPriceArr.push(PetArrPrice)
+                        }
+
+                    }
+                    // console.log("Result[loop1]", result[loop1][0])
+                    // console.log("PetValid", PetValid)
+                    // console.log("BeforePetArr:", PetArr)
+                    // Remove2Arr.push(Remove2)
+
+                }
+                //console.log("PetArrAll:", PetArrAll)
+                // console.log("PetArr:", PetArr)
+                // console.log("Remove2Arr:", Remove2Arr)
+                const resultNoPet = result.filter(item => item[0].item_tag_id !== 'PET');
+                //console.log("resultnopet:", resultNoPet);
+
+                let cleanedItems = PetArr.map(item => {
+                    // Use regex to match any non-alphabetic characters at the beginning of the string
+                    let match = item.match(/^[^a-zA-Z]+/);
+                    if (match) {
+                        // If there is a match, remove the matched characters from the beginning of the string
+                        item = item.substring(match[0].length);
+
+                    }
+                    return item;
+                });
+
+                // console.log("cleanedItems", cleanedItems);
+                // Loop through the array and replace any lowercase letters
+                const cleanedItemsName = cleanedItems.map((item) => item.replace(/^[a-z]+(?=[A-Z])/g, ''));
+
+
+                console.log("cleanedItemsName:", cleanedItemsName);
+
+                console.log("PetArrPriceArr:", PetArrPriceArr)
+
+                //Create a forloop for cleaneditemsname uppercase and underscore if needed
+
+                var uppercaseCleaned
+                var uppercasecleanedarr = []
+
+                for (var loop2 = 0; loop2 < cleanedItemsName.length; loop2++) {
+                    var uppercaseCleaned = cleanedItemsName[loop2].toUpperCase();
+                    var modifiedCleaned = uppercaseCleaned.replace(/\s/g, '_');
+                    uppercasecleanedarr.push(modifiedCleaned);
+
+                    PetNamePrice = {
+                        item_tag_id: uppercasecleanedarr[loop2],
+                        price: PetArrPriceArr[loop2],
+                        itemnameforpic: "PET"
+                    };
+
+                    PetNamePrice2 = {
+                        item_tag_id: cleanedItemsName[loop2],
+                        price: PetArrPriceArr[loop2],
+                        itemnameforpic: "PET"
+                    };
+
+                    PetNamePriceArr2.push(PetNamePrice2);
+                    PetNamePriceArr.push(PetNamePrice);}
+                    console.log("uppercasecleanedarr", uppercasecleanedarr);
+
+                    console.log("PetNamePriceArr:", PetNamePriceArr)
+                    var GroupPetNamePriceArr = group(PetNamePriceArr, 'item_tag_id')
+                    var GroupPetNamePriceArr2 = group(PetNamePriceArr2, 'item_tag_id')
+                    console.log("GroupPetNamePriceArr:", GroupPetNamePriceArr)
+                    console.log("Sus:", GroupPetNamePriceArr2)
+                    var ResultWithPet = GroupPetNamePriceArr.concat(resultNoPet);
+                    console.log("ResultWithPet:", ResultWithPet);
+                    for (var loop4 = 0; loop4 < GroupPetNamePriceArr.length; loop4++) {
+                        ItemIdPet = GroupPetNamePriceArr[loop4][0].item_tag_id
+                        ItemIdPetArr.push(ItemIdPet)
+                        ItemIdPet2 = GroupPetNamePriceArr2[loop4][0].item_tag_id
+                        ItemIdPetArr2.push(ItemIdPet2)
+                    }
+                    console.log("ItemIdPetArr", ItemIdPetArr)
+
+
+
+                    // console.log("Volume:", CounterResult)
+
+                    let IQRResults = []
+                    let AvrResults = []
+                    //Loop over every array in Result and calculates IQR for every Array.
+                    for (var z = 0; z < ResultWithPet.length; z++) {
+                        var pricearray = ResultWithPet[z].map(x => x.price);
+                        var priceIQR = IQR(pricearray);
+                        var priceAvr = median(pricearray)
+                        IQRResults.push(priceIQR);
+                        AvrResults.push(priceAvr)
+
+
+
+
+
+
+
+                    }
+                    for (var loop3 = 0; loop3 < resultNoPet.length; loop3++) {
+                        var itemId = resultNoPet[loop3][0].item_tag_id;
+                        var formattedItemId = itemId.split("_")
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                            .join(" ");
+                        formatItemArr.push(formattedItemId);
+                        itemIDARRAY.push(itemId);
+                    }
+
+                    console.log("IQRResults", IQRResults);
+                    // console.log("itemIDARRAY", itemIDARRAY)
+                    // console.log("formatItemArr:", formatItemArr)
+                    // console.log("formatItemArr:", formatItemArr);
+                    // 
+                    // console.log("CounterResult", CounterResult)
+
+                    //Combines ItemID with the PetsItemID
+                    var itemIdwithPet = ItemIdPetArr.concat(itemIDARRAY)
+                    var formatItemIdwithPet = ItemIdPetArr2.concat(formatItemArr)
+                    console.log("ItemIdwithPet:", formatItemIdwithPet)
+                    console.log("formatItemIdwithPet", formatItemIdwithPet)
+
+
+                    //Loops through every array in IQRResuls and sorts the array from highest to lowest profit
+
+                    var IqrResultsObj = IQRResults.map(function (str, index) {
+                        var parts = str.split(", ");
+                        var buy = parseFloat(parts[0].split(": ")[1]);
+                        if (isNaN(buy)) {
+                            buy = "Not Enough Data"
+                        }
+                        var sell = parseFloat(parts[1].split(": ")[1]);
+                        if (isNaN(sell)) {
+                            sell = "Not Enough Data"
+                        }
+                        var profit = parseFloat(parts[2].split(": ")[1]);
+                        if (isNaN(profit)) {
+                            profit = 0
+                        }
+                        var itemId2 = itemIdwithPet[index];
+                        var SellVolume = CounterResult[index]
+                        FormatNameID = formatItemIdwithPet[index]
+                        var MedianResults = AvrResults[index]
+                        var obj2 = ResultWithPet[index][0];
+                        var itemnameforpic2 = ResultWithPet[index][0].itemnameforpic; // Access itemnameforpic of the current item
+                        return { itemnameforpic2, MedianResults, itemId2, FormatNameID, buy: buy, sell: sell, profit: profit, SellVolume };
+                    });
+
+                    GreatLowIQR = IqrResultsObj.sort(function (a, b) {
+                        if (isNaN(a.profit) && isNaN(b.profit)) return 0; // if both are NaN, treat them as equal
+                        if (isNaN(a.profit)) return -1; // a is NaN, so put it at the end
+                        if (isNaN(b.profit)) return 1; // b is NaN, so put it at the end
+                        return b.profit - a.profit; // both are numbers, so sort normally
+                    });
+                    // console.log("Sorted Profit Data", GreatLowIQR);
+                    // console.log("MaybeSomething'sWrong:", IqrResultsObj)
+
+                    return GreatLowIQR
+
                 }
 
-                // console.log("IQRResults", IQRResults);
-                // console.log("formatItemArr:", formatItemArr);
-                // console.log("AvrResults:", AvrResults)
 
-                //Loops through every array in IQRResuls and sorts the array from highest to lowest profit
+                function displayItems(GreatLowIQR) {
+                    // select the container where you want to display the boxes
+                    var container = document.getElementById("BoxForArray");
 
-                var IqrResultsObj = IQRResults.map(function (str, index) {
-                    var parts = str.split(", ");
-                    var buy = parseFloat(parts[0].split(": ")[1]);
-                    if (isNaN(buy)) {
-                        buy = "Not Enough Data"
+
+                    // delete what is in the container before adding stuff
+                    container.innerHTML = "";
+
+                    //Create Commas in between every third digit.
+
+
+                    // loop through each item in GreatLowIQR and create a box element for each
+                    for (var B = 0; B < GreatLowIQR.length; B++) {
+                        // create a box element
+                        box = document.createElement("div");
+                        box.classList.add("box");
+                        box.id = GreatLowIQR[B].itemId2;
+                        // console.log("GreatLowIQR Id:", GreatLowIQR[B].itemId2)
+
+
+                        //1% tax
+                        var tax
+                        if (GreatLowIQR[B].sell > 1000000) { tax = GreatLowIQR[B].sell * 0.02; }
+                        else {
+                            tax = GreatLowIQR[B].sell * 0.01
+                        }
+                        TaxArr.push(tax)
+
+                        var ProfitTax = GreatLowIQR[B].profit - TaxArr[B]
+                        profitTaxArr.push(ProfitTax)
+
+                        var CommaBuy = Number(GreatLowIQR[B].buy).toLocaleString("en-US");
+                        CommaBuyArr.push(CommaBuy)
+                        var CommaSell = Number(GreatLowIQR[B].sell).toLocaleString("en-US");
+                        CommaSellArr.push(CommaSell)
+                        var CommaProfit
+                        var CommaMedian = Number(GreatLowIQR[B].MedianResults).toLocaleString("en-US");
+                        CommaMedianArr.push(CommaMedian)
+                        var CommaTax = Number(TaxArr[B]).toLocaleString("en-US");
+                        CommaTaxArr.push(CommaTax)
+                        var CommaProfitTax = Number(GreatLowIQR[B].profit).toLocaleString("en-US");
+                        CommaProfitTaxArr.push(CommaProfitTax)
+
+
+
+                        var FormatNameIDLength = GreatLowIQR[B].FormatNameID
+                        FMIDLArr.push(FormatNameIDLength)
+
+                        // create a text element to display the values of the current item
+                        var text = document.createElement("p");
+                        text.innerHTML = GreatLowIQR[B].FormatNameID + "<br>" +
+                            "Buy: " + CommaBuyArr[B] + "<br>" +
+                            "Sell: " + CommaSellArr[B] + "(Fee:" + CommaTaxArr[B] + ")" + "<br>" +
+                            "Profit: " + CommaProfitTaxArr[B] + "<br>" +
+                            "Average:" + CommaMedianArr[B] + "<br>" +
+                            "Volume:" + GreatLowIQR[B].SellVolume + "<br>";
+                        text.style.display = "inline-block";
+
+
+
+
+
+                        // add the text element to the box element
+                        box.appendChild(text);
+
+
+
+                        //Create an Image Icon for each individual item
+                        var image = document.createElement("img");
+                        var itemImage
+                        if (GreatLowIQR[B].itemnameforpic2 == "PET") {
+                            itemImage = "PET"
+                        }
+                        else {
+                            itemImage = GreatLowIQR[B].itemId2;
+                        }
+
+                        var imageUrl = "https://sky.coflnet.com/static/icon/image/" + itemImage;
+                        image.src = imageUrl;
+
+                        var imageDiv = document.createElement("div");
+                        imageDiv.classList.add("image-div");
+                        imageDiv.appendChild(image);
+                        imageDiv.style.float = "left";
+
+
+                        // add the image element to the box element
+                        box.appendChild(imageDiv);
+
+                        // create a grid item element to hold the box element
+                        var gridItem = document.createElement("div");
+                        gridItem.classList.add("grid-item");
+                        gridItem.appendChild(box);
+
+                        // add the grid item element to the container
+                        container.appendChild(gridItem);
+
+
+
                     }
-                    var sell = parseFloat(parts[1].split(": ")[1]);
-                    if (isNaN(sell)) {
-                        sell = "Not Enough Data"
+
+
+                }
+
+                // console.log("Test:", FMIDLArr)
+                // console.log("IQR", IQRResults);
+                // console.log("TaxArr", TaxArr)
+
+
+                init()
+
+
+
+                //SORT
+                // //Sort Main Array into Different Arrays
+                function group(arr, key) {
+                    return [...arr.reduce((acc, o) =>
+                        acc.set(o[key], (acc.get(o[key]) || []).concat(o))
+                        , new Map).values()];
+                }
+
+
+                //CALCULATIONS
+                //Counts how many of each array sold.
+                function Volume(a) {
+                    let counter = [];
+                    for (const i of a) {
+                        counter.push(i.length)
                     }
-                    var profit = parseFloat(parts[2].split(": ")[1]);
-                    if (isNaN(profit)) {
-                        profit = 0
+                    return counter
+
+                }
+
+                //IQR Function Calulcator
+                function IQR(a) {
+
+                    a.sort(function (a, b) {
+                        return a - b;
+                    });
+                    aLen = a.length;
+                    //console.log("Sorted-a", a)
+
+                    // [0 1 2 3  4  5]
+                    //  | | | |  |  |
+                    // [3 5 7 9 20 21]
+                    // dataset1 [3 5 7]    = a.slice(0,3) = a.slice(0, aLen/2)
+                    // dataset2 [9 20 21]  = a.slice(3,6) = a.slice(aLen/2, aLen)
+
+                    // [0 1 2 3  4  5   6 ]  =>  aLen = 7
+                    //  | | | |  |  |   |
+                    // [3 5 7 9 20 21  30]
+                    // dataset1 [3 5 7]    =  a.slice(0,3) = a.slice(0, (aLen-1)/2)
+                    // dataset2 [20 21 30]  = a.slice(4,7) = a.slice((aLen+1)/2, aLen)
+
+
+                    if (aLen % 2 == 0) {
+                        // even
+                        dataset1 = a.slice(0, aLen / 2)
+                        dataset2 = a.slice(aLen / 2, aLen)
+                    } else {
+                        // odd
+                        dataset1 = a.slice(0, (aLen - 1) / 2)
+                        dataset2 = a.slice((aLen + 1) / 2, aLen)
                     }
-                    var itemId2 = itemIDARRAY[index];
-                    var SellVolume = CounterResult[index]
-                    FormatNameID = formatItemArr[index]
-                    var MedianResults = AvrResults[index]
-
-                    return { MedianResults, itemId2, FormatNameID, buy: buy, sell: sell, profit: profit, SellVolume };
-                });
-
-                GreatLowIQR = IqrResultsObj.sort(function (a, b) {
-                    if (isNaN(a.profit) && isNaN(b.profit)) return 0; // if both are NaN, treat them as equal
-                    if (isNaN(a.profit)) return -1; // a is NaN, so put it at the end
-                    if (isNaN(b.profit)) return 1; // b is NaN, so put it at the end
-                    return b.profit - a.profit; // both are numbers, so sort normally
-                });
-                // console.log("Sorted Profit Data", GreatLowIQR);
-
-                return GreatLowIQR
-
-            }
 
 
-            function displayItems(GreatLowIQR) {
-                // select the container where you want to display the boxes
-                var container = document.getElementById("BoxForArray");
 
+                    // Median of first half
+                    var Q1 = median(dataset1);
 
-                // delete what is in the container before adding stuff
-                container.innerHTML = "";
+                    // Median of second half
+                    var Q3 = median(dataset2);
 
-                //Create Commas in between every third digit.
-
-
-                // loop through each item in GreatLowIQR and create a box element for each
-                for (var B = 0; B < GreatLowIQR.length; B++) {
-                    // create a box element
-                    box = document.createElement("div");
-                    box.classList.add("box");
-                    box.id = GreatLowIQR[B].itemId2;
-
-
-                    //1% tax
-                    var tax
-                    if (GreatLowIQR[B].sell > 1000000) { tax = GreatLowIQR[B].sell * 0.02; }
+                    //console.log("Buy:", Q1)
+                    //console.log("Sell:", Q3)
+                    // IQR calculation
+                    var IQR = (Q3 - Q1)
+                    if (Q3 > 1000000) { Tax2 = Q3 * 0.02; }
                     else {
-                        tax = GreatLowIQR[B].sell * 0.01
+                        Tax2 = Q3 * 0.01
                     }
-                    TaxArr.push(tax)
-
-                    var ProfitTax = GreatLowIQR[B].profit - TaxArr[B]
-                    profitTaxArr.push(ProfitTax)
-
-                    var CommaBuy = Number(GreatLowIQR[B].buy).toLocaleString("en-US");
-                    CommaBuyArr.push(CommaBuy)
-                    var CommaSell = Number(GreatLowIQR[B].sell).toLocaleString("en-US");
-                    CommaSellArr.push(CommaSell)
-                    var CommaProfit
-                    var CommaMedian = Number(GreatLowIQR[B].MedianResults).toLocaleString("en-US");
-                    CommaMedianArr.push(CommaMedian)
-                    var CommaTax = Number(TaxArr[B]).toLocaleString("en-US");
-                    CommaTaxArr.push(CommaTax)
-                    var CommaProfitTax = Number(GreatLowIQR[B].profit).toLocaleString("en-US");
-                    CommaProfitTaxArr.push(CommaProfitTax)
+                    var ProfitAfterTax = IQR - Tax2
 
 
-
-                    var FormatNameIDLength = GreatLowIQR[B].FormatNameID
-                    FMIDLArr.push(FormatNameIDLength)
-
-                    // create a text element to display the values of the current item
-                    var text = document.createElement("p");
-                    text.innerHTML = GreatLowIQR[B].FormatNameID + "<br>" +
-                        "Buy: " + CommaBuyArr[B] + "<br>" +
-                        "Sell: " + CommaSellArr[B] + "(Fee:" + CommaTaxArr[B] + ")" + "<br>" +
-                        "Profit: " + CommaProfitTaxArr[B] + "<br>" +
-                        "Average:" + CommaMedianArr[B] + "<br>" +
-                        "Volume:" + GreatLowIQR[B].SellVolume + "<br>";
-                    text.style.display = "inline-block";
-
-
-
-
-
-                    // add the text element to the box element
-                    box.appendChild(text);
-
-
-
-                    //Create an Image Icon for each individual item 
-                    var image = document.createElement("img");
-                    var itemImage = GreatLowIQR[B].itemId2;
-                    var imageUrl = "https://sky.coflnet.com/static/icon/image/" + itemImage;
-                    image.src = imageUrl;
-
-                    var imageDiv = document.createElement("div");
-                    imageDiv.classList.add("image-div");
-                    imageDiv.appendChild(image);
-                    imageDiv.style.float = "left";
-
-
-                    // add the image element to the box element
-                    box.appendChild(imageDiv);
-
-                    // create a grid item element to hold the box element
-                    var gridItem = document.createElement("div");
-                    gridItem.classList.add("grid-item");
-                    gridItem.appendChild(box);
-
-                    // add the grid item element to the container
-                    container.appendChild(gridItem);
+                    let IQRALL = "Buy: " + Q1 + ", Sell: " + Q3 + ", Profit: " + ProfitAfterTax;
+                    return (IQRALL);
 
 
 
                 }
 
 
-            }
+                //Median Function Calculator
+                function median(numbers) {
+                    // median of [3, 5, 4, 4, 1, 1, 2, 3] = 3
+                    var median = 0, numsLen = numbers.length;
+                    numbers.sort(function (a, b) {
+                        return a - b;
+                    });
 
-            // console.log("Test:", FMIDLArr)
-            // console.log("IQR", IQRResults);
-            // console.log("TaxArr", TaxArr)
-
-
-            init()
-
-
-
-            //SORT
-            // //Sort Main Array into Different Arrays
-            function group(arr, key) {
-                return [...arr.reduce((acc, o) =>
-                    acc.set(o[key], (acc.get(o[key]) || []).concat(o))
-                    , new Map).values()];
-            }
-
-
-            //CALCULATIONS
-            //Counts how many of each array sold.
-            function Volume(a) {
-                let counter = [];
-                for (const i of a) {
-                    counter.push(i.length)
-                }
-                return counter
-
-            }
-
-            //IQR Function Calulcator
-            function IQR(a) {
-
-                a.sort(function (a, b) {
-                    return a - b;
-                });
-                aLen = a.length;
-                //console.log("Sorted-a", a)
-
-                // [0 1 2 3  4  5] 
-                //  | | | |  |  |
-                // [3 5 7 9 20 21]
-                // dataset1 [3 5 7]    = a.slice(0,3) = a.slice(0, aLen/2)
-                // dataset2 [9 20 21]  = a.slice(3,6) = a.slice(aLen/2, aLen)
-
-                // [0 1 2 3  4  5   6 ]  =>  aLen = 7 
-                //  | | | |  |  |   |
-                // [3 5 7 9 20 21  30]
-                // dataset1 [3 5 7]    =  a.slice(0,3) = a.slice(0, (aLen-1)/2)
-                // dataset2 [20 21 30]  = a.slice(4,7) = a.slice((aLen+1)/2, aLen)
-
-
-                if (aLen % 2 == 0) {
-                    // even 
-                    dataset1 = a.slice(0, aLen / 2)
-                    dataset2 = a.slice(aLen / 2, aLen)
-                } else {
-                    // odd
-                    dataset1 = a.slice(0, (aLen - 1) / 2)
-                    dataset2 = a.slice((aLen + 1) / 2, aLen)
-                }
-
-
-
-                // Median of first half
-                var Q1 = median(dataset1);
-
-                // Median of second half
-                var Q3 = median(dataset2);
-
-                //console.log("Buy:", Q1)
-                //console.log("Sell:", Q3)
-                // IQR calculation
-                var IQR = (Q3 - Q1)
-                if (Q3 > 1000000) { Tax2 = Q3 * 0.02; }
-                else {
-                    Tax2 = Q3 * 0.01
-                }
-                var ProfitAfterTax = IQR - Tax2
-
-
-                let IQRALL = "Buy: " + Q1 + ", Sell: " + Q3 + ", Profit: " + ProfitAfterTax;
-                return (IQRALL);
-
-
-
-            }
-
-
-            //Median Function Calculator
-            function median(numbers) {
-                // median of [3, 5, 4, 4, 1, 1, 2, 3] = 3
-                var median = 0, numsLen = numbers.length;
-                numbers.sort(function (a, b) {
-                    return a - b;
-                });
-
-                if (
-                    numsLen % 2 === 0 // is even
-                ) {
-                    // average of two middle numbers
-                    median = (numbers[numsLen / 2 - 1] + numbers[numsLen / 2]) / 2;
-                } else { // is odd
-                    // middle number only
-                    median = numbers[(numsLen - 1) / 2];
-                }
-
-                return median;
-            }
-
-
-
-
-            //Need Help with This
-            function ListFilter() {
-
-                //Old Crap
-                var input = document.getElementById('FilterList');
-                var InputValue = input.value;
-                var UnderscoreInputValue = InputValue.replace(/ /g, "_");
-                console.log("UnderscoreInputValue", UnderscoreInputValue)
-                // console.log("Input Value:", InputValue);
-                UpperInputValue = UnderscoreInputValue.toUpperCase();
-                // console.log("UpperInputValue:", UpperInputValue,)
-
-
-                ul = document.getElementById("BoxForArray");
-                li = ul.getElementsByClassName('grid-item')
-                //console.log("li:", li)
-                for (i = 0; i < li.length; i++) {
-                    // console.log ("li[i].childNodes:", li[i].childNodes)
-                    if (li[i].childNodes[0].id.indexOf(UpperInputValue) > -1) {
-                        li[i].style.display = "";
-                    }
-                    else {
-                        li[i].style.display = "none";
+                    if (
+                        numsLen % 2 === 0 // is even
+                    ) {
+                        // average of two middle numbers
+                        median = (numbers[numsLen / 2 - 1] + numbers[numsLen / 2]) / 2;
+                    } else { // is odd
+                        // middle number only
+                        median = numbers[(numsLen - 1) / 2];
                     }
 
+                    return median;
                 }
-            }
+
+
+
+
+                //Need Help with This
+                function ListFilter() {
+
+                    //Old Crap
+                    var input = document.getElementById('FilterList');
+                    var InputValue = input.value;
+                    var UnderscoreInputValue = InputValue.replace(/ /g, "_");
+                    console.log("UnderscoreInputValue", UnderscoreInputValue)
+                    // console.log("Input Value:", InputValue);
+                    UpperInputValue = UnderscoreInputValue.toUpperCase();
+                    // console.log("UpperInputValue:", UpperInputValue,)
+
+
+                    ul = document.getElementById("BoxForArray");
+                    li = ul.getElementsByClassName('grid-item')
+                    //console.log("li:", li)
+                    for (i = 0; i < li.length; i++) {
+                        console.log("li[i].childNodes:", li[i].childNodes)
+                        if (li[i].childNodes[0].id.indexOf(UpperInputValue) > -1) {
+                            li[i].style.display = "";
+                        }
+                        else {
+                            li[i].style.display = "none";
+                        }
+                        //  console.log("li", li[i])
+                    }
+                }
 
 
 
