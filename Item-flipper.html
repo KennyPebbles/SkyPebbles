@@ -316,6 +316,10 @@
                 var ItemIdPet, ItemIdPet2
                 var TierItem
                 var TierArr = []
+                var RuneValid
+                var RuneArr = []
+                var cleanRuneArr = []
+                var RunePriceArr = []
                 //Displays Sorted Group Array and Volume
                 // if (IntMIV === "") { result = group(json2, 'item_tag_id') }
                 // else {
@@ -352,18 +356,37 @@
                         }
 
                     }
-
-                    // console.log("Result[loop1]", result[loop1][0])
-                    // console.log("PetValid", PetValid)
-                    // console.log("BeforePetArr:", PetArr)
-                    // Remove2Arr.push(Remove2)
-
+                    //This is for Rune
+                    if (result[loop1][0].item_tag_id === 'RUNE') {
+                        for (var loop5 = 0; loop5 < result[loop1].length; loop5++) {
+                            RuneValid = result[loop1][loop5]
+                            cleanrunename = RuneValid.item_tag_display_name.substring(4)
+                            cleanrunename = cleanrunename.replace(/§cR§6a§ei§an§bb§9o§dw§9/g, "Rainbow");
+                            underscorerunename = cleanrunename.replace(/\s/g, '_');
+                            var uppercaseRune = underscorerunename.toUpperCase();
+                            RuneArr.push(uppercaseRune)
+                            cleanRuneArr.push(cleanrunename)
+                            var RunePrice = RuneValid.price
+                            RunePriceArr.push(RunePrice)
+                        }
+                    }
                 }
+                console.log("RuneArr:", RuneArr)
+                console.log("RunePriceArr:", RunePriceArr)
+
+                // console.log("Result}[loop1]", result[loop1][0])
+                // console.log("PetValid", PetValid)
+                // console.log("BeforePetArr:", PetArr)
+                // Remove2Arr.push(Remove2)
+
+
                 //console.log("PetArrAll:", PetArrAll)
                 // console.log("PetArr:", PetArr)
                 // console.log("Remove2Arr:", Remove2Arr)
-                console.log("TierArr:", TierArr)
+                // console.log("TierArr:", TierArr)
                 const resultNoPet = result.filter(item => item[0].item_tag_id !== 'PET');
+                const resultNoRune = resultNoPet.filter(item => item[0].item_tag_id !== 'RUNE');
+                console.log("ResultNoRune", resultNoRune)
                 //console.log("resultnopet:", resultNoPet);
 
                 let cleanedItems = PetArr.map(item => {
@@ -392,6 +415,10 @@
                 var uppercasecleanedarr = []
                 var tierName
                 var tierNameArr = []
+                var RuneNamePrice1, RuneNamePrice2
+                var RuneNamePrice1Arr = []
+                var RuneNamePrice2Arr = []
+
 
                 for (var loop2 = 0; loop2 < cleanedItemsName.length; loop2++) {
                     var uppercaseCleaned = cleanedItemsName[loop2].toUpperCase();
@@ -401,14 +428,14 @@
                     tierNameArr.push(tierName)
 
                     PetNamePrice = {
-                        item_tag_id: tierNameArr[loop2],
+                        item_tag_id: tierNameArr[loop2] + "_" + "PET",
                         price: PetArrPriceArr[loop2],
                         itemnameforpic: "PET",
                         tier: TierArr[loop2]
                     };
 
                     PetNamePrice2 = {
-                        item_tag_id: TierArr[loop2] + " " + cleanedItemsName[loop2],
+                        item_tag_id: TierArr[loop2] + " " + cleanedItemsName[loop2] + " " + "Pet",
                         price: PetArrPriceArr[loop2],
                         itemnameforpic: "PET",
                         tier: TierArr[loop2]
@@ -416,6 +443,22 @@
 
                     PetNamePriceArr2.push(PetNamePrice2);
                     PetNamePriceArr.push(PetNamePrice);
+                }
+
+                for (var loop6 = 0; loop6 < RuneArr.length; loop6++) {
+                    RuneNamePrice1 = {
+                        item_tag_id: RuneArr[loop6],
+                        price: RunePriceArr[loop6],
+                        itemnameforpic: "RUNE",
+                    }
+
+                    RuneNamePrice2 = {
+                        item_tag_id: cleanRuneArr[loop6],
+                        price: RunePriceArr[loop6],
+                        itemnameforpic: "RUNE",
+                    }
+                    RuneNamePrice1Arr.push(RuneNamePrice1)
+                    RuneNamePrice2Arr.push(RuneNamePrice2)
                 }
                 // console.log("uppercasecleanedarr", uppercasecleanedarr);
                 // console.log("TierNameArr:", tierNameArr)
@@ -426,22 +469,36 @@
                 // console.log("GroupPetNamePriceArr2:", GroupPetNamePriceArr2)
                 // console.log("GroupPetNamePriceArr:", GroupPetNamePriceArr)
 
-                console.log("tierNameArr:", tierNameArr)
-                console.log("uppercasecleanedarr:", uppercasecleanedarr)
-                console.log("tierNameArr:", tierNameArr)
+                var GroupRune1 = group(RuneNamePrice1Arr, 'item_tag_id')
+                var GroupRune2 = group(RuneNamePrice2Arr, 'item_tag_id')
+                console.log("GroupRune1:", GroupRune1)
 
-                //Group The Pets By Tier
+                // console.log("tierNameArr:", tierNameArr)
+                // console.log("uppercasecleanedarr:", uppercasecleanedarr)
+                // console.log("tierNameArr:", tierNameArr)
+
+
                 // console.log("GroupPetNamePriceArr:", GroupPetNamePriceArr)
                 // console.log("Sus:", GroupPetNamePriceArr2)
-                var ResultWithPet = GroupPetNamePriceArr.concat(resultNoPet);
-                console.log("ResultWithPet:", ResultWithPet);
+                var ResultWithPet = GroupPetNamePriceArr.concat(resultNoRune);
+                var ResultWithPR = GroupRune1.concat(ResultWithPet)
+                // console.log("ResultWithPet:", ResultWithPet);
                 for (var loop4 = 0; loop4 < GroupPetNamePriceArr.length; loop4++) {
                     ItemIdPet = GroupPetNamePriceArr[loop4][0].item_tag_id
                     ItemIdPetArr.push(ItemIdPet)
                     ItemIdPet2 = GroupPetNamePriceArr2[loop4][0].item_tag_id
                     ItemIdPetArr2.push(ItemIdPet2)
                 }
-                console.log("ItemIdPetArr", ItemIdPetArr)
+                var ItemIdRune, ItemIdRune2
+                var ItemIdRuneArr = []
+                var ItemIdruneArr2 = []
+                for (var loop7 = 0; loop7 < GroupRune1.length; loop7++) {
+                    ItemIdRune = GroupRune1[loop7][0].item_tag_id
+                    ItemIdRune2 = GroupRune2[loop7][0].item_tag_id
+                    ItemIdRuneArr.push(ItemIdRune)
+                    ItemIdruneArr2.push(ItemIdRune2)
+                }
+                // console.log("ItemIdPetArr", ItemIdPetArr)
 
 
 
@@ -450,8 +507,8 @@
                 let IQRResults = []
                 let AvrResults = []
                 //Loop over every array in Result and calculates IQR for every Array.
-                for (var z = 0; z < ResultWithPet.length; z++) {
-                    var pricearray = ResultWithPet[z].map(x => x.price);
+                for (var z = 0; z < ResultWithPR.length; z++) {
+                    var pricearray = ResultWithPR[z].map(x => x.price);
                     var priceIQR = IQR(pricearray);
                     var priceAvr = median(pricearray)
                     IQRResults.push(priceIQR);
@@ -462,12 +519,11 @@
 
 
 
-
                 }
-                CounterResult = Volume(ResultWithPet)
-                console.log("Volume:", CounterResult)
-                for (var loop3 = 0; loop3 < resultNoPet.length; loop3++) {
-                    var itemId = resultNoPet[loop3][0].item_tag_id;
+                CounterResult = Volume(ResultWithPR)
+                // console.log("Volume:", CounterResult)
+                for (var loop3 = 0; loop3 < resultNoRune.length; loop3++) {
+                    var itemId = resultNoRune[loop3][0].item_tag_id;
                     var formattedItemId = itemId.split("_")
                         .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
                         .join(" ");
@@ -485,8 +541,12 @@
                 //Combines ItemID with the PetsItemID
                 var itemIdwithPet = ItemIdPetArr.concat(itemIDARRAY)
                 var formatItemIdwithPet = ItemIdPetArr2.concat(formatItemArr)
-                console.log("ItemIdwithPet:", itemIdwithPet)
+                var itemIdPetRune = ItemIdRuneArr.concat(itemIdwithPet)
+                var formatItemIdPetRune = ItemIdruneArr2.concat(formatItemIdwithPet)
+                // console.log("ItemIdwithPet:", itemIdwithPet)
                 // console.log("formatItemIdwithPet", formatItemIdwithPet)
+                console.log("ResultWithPR:", ResultWithPR)
+
 
 
                 //Loops through every array in IQRResuls and sorts the array from highest to lowest profit
@@ -505,12 +565,13 @@
                     if (isNaN(profit)) {
                         profit = 0
                     }
-                    var itemId2 = itemIdwithPet[index];
+                    var itemId2 = itemIdPetRune[index];
                     var SellVolume = CounterResult[index]
-                    FormatNameID = formatItemIdwithPet[index]
+                    FormatNameID = formatItemIdPetRune[index]
                     var MedianResults = AvrResults[index]
-                    var obj2 = ResultWithPet[index][0];
-                    var itemnameforpic2 = ResultWithPet[index][0].itemnameforpic; // Access itemnameforpic of the current item
+                    var obj2 = ResultWithPR[index][0];
+                    var itemnameforpic2 = ResultWithPR[index][0].itemnameforpic
+
                     return { itemnameforpic2, MedianResults, itemId2, FormatNameID, buy: buy, sell: sell, profit: profit, SellVolume };
                 });
 
@@ -593,19 +654,21 @@
                     // add the text element to the box element
                     box.appendChild(text);
 
-
+                    console.log("Itemnameforpic2:", GreatLowIQR[B].itemnameforpic2)
 
                     //Create an Image Icon for each individual item
                     var image = document.createElement("img");
                     var itemImage
-                    if (GreatLowIQR[B].itemnameforpic2 == "PET") {
-                        itemImage = "PET"
-                    }
-                    else {
+                    if (GreatLowIQR[B].itemnameforpic2 === "PET") {
+                        itemImage = "PET";
+                    } else if (GreatLowIQR[B].itemnameforpic2 === "RUNE") {
+                        itemImage = "RUNE";
+                    } else {
                         itemImage = GreatLowIQR[B].itemId2;
                     }
 
                     var imageUrl = "https://sky.coflnet.com/static/icon/image/" + itemImage;
+
                     image.src = imageUrl;
 
                     var imageDiv = document.createElement("div");
