@@ -189,23 +189,21 @@
 
 <body>
     <div id="mySidebar" class="sidebar" onmouseover="toggleSidebar()" onmouseout="toggleSidebar()">
-        <a href="#"><span style="margin-right: -10px;"></span><span><i class="material-icons"> <img src="PebbleIcon.png"
-                        width="50" height="50"></i><span class="icon-text">&nbsp;&nbsp;SkyPebbles</span></a><br>
+        <a href="#"><span style="margin-right: -10px;"></span><span><i class="material-icons"><img src="PebbleIcon.png"
+                    width="50" height="50"></i><span class="icon-text">&nbsp;&nbsp;SkyPebbles</span></span></a><br>
         <a href="https://kennypebbles.github.io/SkyPebbles/"><span><i class="material-icons">home</i><span
                     class="icon-text">&nbsp;&nbsp;&nbsp;&nbsp;Home</span></span></a><br>
         <a href="#">
-            <i class="material-symbols-outlined" style="margin-right: 20px;">place_item</i>
+            <a href="Item-flipper.html">    <i class="material-symbols-outlined" style="margin-right: 20px;">place_item</i>
             <span class="icon-text">Item-Flipper</span>
-        </a>
         </a><br>
-        <a href="#"><i class="material-icons">monetization_on</i><span
-                class="icon-text"></span>&nbsp;&nbsp;&nbsp;&nbsp;clients</span></a><br>
-        <a href="#"><i class="material-icons">email</i><span
-                class="icon-text"></span>&nbsp;&nbsp;&nbsp;&nbsp;contact<span></a>
+        <a href="item-search.html"><i class="material-icons">monetization_on</i><span class="icon-text">&nbsp;&nbsp;&nbsp;&nbsp;Item Search</span></a><br>
+        <a href="#"><i class="material-icons">email</i><span class="icon-text">contact</span></a>
     </div>
-
+    
     <div id="main">
 
+    
         <input type="text" id="FilterList" onkeyup="ListFilter()" placeholder="Search for items..">
         <input type="text" id="TimeFilter" onkeyup="HourFilter()" placeholder="Enter # of Hours..">
         <ul id="myUL"></ul>
@@ -371,8 +369,8 @@
                         }
                     }
                 }
-                console.log("RuneArr:", RuneArr)
-                console.log("RunePriceArr:", RunePriceArr)
+                // console.log("RuneArr:", RuneArr)
+                // console.log("RunePriceArr:", RunePriceArr)
 
                 // console.log("Result}[loop1]", result[loop1][0])
                 // console.log("PetValid", PetValid)
@@ -471,7 +469,7 @@
 
                 var GroupRune1 = group(RuneNamePrice1Arr, 'item_tag_id')
                 var GroupRune2 = group(RuneNamePrice2Arr, 'item_tag_id')
-                console.log("GroupRune1:", GroupRune1)
+                // console.log("GroupRune1:", GroupRune1)
 
                 // console.log("tierNameArr:", tierNameArr)
                 // console.log("uppercasecleanedarr:", uppercasecleanedarr)
@@ -545,7 +543,7 @@
                 var formatItemIdPetRune = ItemIdruneArr2.concat(formatItemIdwithPet)
                 // console.log("ItemIdwithPet:", itemIdwithPet)
                 // console.log("formatItemIdwithPet", formatItemIdwithPet)
-                console.log("ResultWithPR:", ResultWithPR)
+                // console.log("ResultWithPR:", ResultWithPR)
 
 
 
@@ -654,7 +652,7 @@
                     // add the text element to the box element
                     box.appendChild(text);
 
-                    console.log("Itemnameforpic2:", GreatLowIQR[B].itemnameforpic2)
+                    // console.log("Itemnameforpic2:", GreatLowIQR[B].itemnameforpic2)
 
                     //Create an Image Icon for each individual item
                     var image = document.createElement("img");
